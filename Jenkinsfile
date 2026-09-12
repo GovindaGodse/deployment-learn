@@ -24,15 +24,38 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
+        stage('Deploy to Netlify') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'netlify-token',
+                        variable: 'NETLIFY_AUTH_TOKEN'
+                    ),
+                    string(
+                        credentialsId: 'netlify-site-id',
+                        variable: 'NETLIFY_SITE_ID'
+                    )
+                ]) {
+                    sh '''
+                        npx --yes netlify-cli deploy \
+                          --prod \
+                          --dir=dist \
+                          --site="$NETLIFY_SITE_ID" \
+                          --auth="$NETLIFY_AUTH_TOKEN"
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo '✅ CI/CD pipeline completed successfully!'
         }
 
         failure {
-            echo '❌ Pipeline failed!'
+            echo '❌ CI/CD pipeline failed!'
         }
     }
 }
