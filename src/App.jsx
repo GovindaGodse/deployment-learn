@@ -1,7 +1,7 @@
 function App() {
 
   return (
-    <>Test Deployment 21</>
+    <>Test Deployment 21 ☺️</>
   )
 }
 
